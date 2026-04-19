@@ -229,6 +229,12 @@ adf
 
 #Bilan : la série différenciée semble bien stationnaire et les tests sont unanimes.
 
+#Pour stationnariser la série initiale, on la différencie donc une fois.
+
+#Tracé de la série fm et de sa transformation stationnaire (série différenciée) dfm
+par(mfrow=c(2,1))
+plot(fm)
+plot(dfm)
 
 
 
