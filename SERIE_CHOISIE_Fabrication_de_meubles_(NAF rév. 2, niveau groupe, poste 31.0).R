@@ -108,7 +108,7 @@ Qtests(adf@test$lm$residuals, 30, fitdf = length(adf@test$lm$coefficients))
 #Les résidus sont bien décorrélés.
 
 adf
-##La p-valeur du test d'Augmented Dickey-Fuller est supérieure à 0.10 donc ce test ne rejette pas l'existence d'une racine uniatire.
+##La p-valeur du test d'Augmented Dickey-Fuller est supérieure à 0.10 donc ce test ne rejette pas l'existence d'une racine unitaire.
 
 #Bilan : on part du principe que la série a une racine unitaire, les tests étant unanimes.
 
@@ -299,7 +299,7 @@ signif(arima200)
 ar2 <- arima200 #On stocke ce modèle.
 
 #Partie pouvant être passée, totalement inutile et visant seulement à confirmer une intuition.
-#Le fait que le modèle AR2 et surtout le modèle MA1 soit valide nous fait présumer que tester d'autres moddèles avec davantage de parmaètres pourra nous donner des modèles certes valides mais probablement mal-ajustés.
+#Le fait que le modèle AR2 et surtout le modèle MA1 soit valide nous fait présumer que tester d'autres moddèles avec davantage de paramètres pourra nous donner des modèles certes valides mais probablement mal-ajustés.
 #On vérifie cette intuition.
 arima101 <- arima(dfm,c(1,0,1)) 
 round(Qtests(arima101$residuals,50,fitdf=2),3) #Comme prévu, le modèle est valide
@@ -383,3 +383,4 @@ plot(dfm)
 plot(ar2$residuals) #les résidus sont trop mims
 
 acf(ar2$residuals, lag = 50)
+
