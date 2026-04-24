@@ -322,8 +322,8 @@ apply(as.matrix(models),1, function(m) c("AIC"=AIC(get(m)), "BIC"=BIC(get(m))))
 #Donc on choisit un modèle MA(1) = ARMA(0,1) pour modéliser la série différenciée.
 
 #Bilan : on modélise la série de départ par un ARIMA(0,1,1)
-arima101 <- arima(dfm,c(0,1,1))
-final_model <- arima101 #Renommage pour des raisons de lisibilités
+arima011 <- arima(fm,c(0,1,1))
+final_model <- arima011 #Renommage pour des raisons de lisibilités
 
 
 
