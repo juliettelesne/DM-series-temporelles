@@ -316,25 +316,11 @@ signif(arima201) #Comme présumé, le coefficient MA1 est non-significatif, le m
 models <- c("ar2","ma1"); names(models) <- models
 apply(as.matrix(models),1, function(m) c("AIC"=AIC(get(m)), "BIC"=BIC(get(m))))
 
-#On observe que le modèle MA(1) minimise à la fois les critères AIC et BIC. 
 
+
+
+#OPTIONNEL 
       
-#Donc on choisit un modèle MA(1) = ARMA(0,1) pour modéliser la série différenciée.
-
-#Bilan : on modélise la série de départ par un ARIMA(0,1,1)
-arima011 <- arima(fm,c(0,1,1))
-final_model <- arima011 #Renommage pour des raisons de lisibilités
-
-
-
-
-
-
-
-
-
-
-
 
 #Affichage des ACF et PACF
 par(mfrow=c(1,2))
@@ -364,6 +350,37 @@ v = dfm**2
 s = (arima200$residuals)**2
 sqrt(mean(v))
 sqrt(mean(s))
+#FIN DE L'OPTIONNEL
+
+      
+#On observe que le modèle MA(1) minimise à la fois les critères AIC et BIC. 
+
+      
+#Donc on choisit un modèle MA(1) = ARMA(0,1) pour modéliser la série différenciée.
+
+
+
+
+
+
+
+
+
+
+      
+#Bilan : on modélise la série de départ par un ARIMA(0,1,1)
+arima011 <- arima(fm,c(0,1,1))
+final_model <- arima011 #Renommage pour des raisons de lisibilités
+
+
+
+
+
+
+
+
+
+
 
 
 arimafit <- function(estim){
