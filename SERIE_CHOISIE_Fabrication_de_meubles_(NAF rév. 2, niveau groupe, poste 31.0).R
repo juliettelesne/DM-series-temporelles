@@ -316,10 +316,14 @@ signif(arima201) #Comme présumé, le coefficient MA1 est non-significatif, le m
 models <- c("ar2","ma1"); names(models) <- models
 apply(as.matrix(models),1, function(m) c("AIC"=AIC(get(m)), "BIC"=BIC(get(m))))
 
-#On observe que le modèle MA1 minimise à la fois les critères AIC et BIC. 
-#Etant donné l'existence de deux PACF nettement non-nulles et de même signe, il semble aberrant de sélectionner un modèle MA1, donc on choisira pour la modélisation le modèle AR2.
+#On observe que le modèle MA(1) minimise à la fois les critères AIC et BIC. 
 
+      
+#Donc on choisit un modèle MA(1) = ARMA(0,1) pour modéliser la série différenciée.
 
+#Bilan : on modélise la série de départ par un ARIMA(0,1,1)
+arima101 <- arima(dfm,c(0,1,1))
+final_model <- arima101 #Renommage pour des raisons de lisibilités
 
 
 
