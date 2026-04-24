@@ -48,8 +48,20 @@ cat("Nombre d'observations total :", length(fm.source_rev) - 3, "\n")
 # sur les 434 au total
 cat("Dernière observation retenue :", format(as.yearmon("jan 1990") + (362-1)/12), "\n") # on a retiré 72 mois (6 ans) à la fin
 
+cat("Première observation :", format(index(fm)[1]), "\n")
+cat("Dernière observation :", format(index(fm)[length(fm)]), "\n")
+# l'index de la série est numérique et non des dates, donc on remplace cela
+fm <- zoo(fm.num) # ligne 39 déjà existante
 
+# Ajout d'un index de dates propre
+dates_fm <- as.yearmon(seq(from = 1990, 
+                           to = 1990 + (length(fm.num)-1)/12, 
+                           by = 1/12))
+fm <- zoo(fm.num, order.by = dates_fm)
 
+# Vérification
+cat("Première observation :", format(index(fm)[1]), "\n")
+cat("Dernière observation :", format(index(fm)[length(fm)]), "\n")
 
 
 #DEUXIEME ETAPE : RENDRE LA SERIE TEMPORELLE STATIONNAIRE
@@ -222,6 +234,29 @@ kpss.test(dfm, null = "Trend") #
 #Le test de Perron-Phillips est robuste aux ruptures, pas KPSS.
 pp.test(dfm)
 #La p-valeur du test de Perron-Phillips est inférieure à 0.01 donc ce test rejette l'existence d'une racine unitaire.
+
+# Résultats pour le rapport
+
+# KPSS série brute
+kpss.test(fm, null = "Trend")
+
+# PP série brute  
+pp.test(fm)
+
+# ADF série brute (déjà dans votre code)
+adf <- adfTest_valid(fm, 30, adftype = "ct")
+adf
+
+# KPSS série différenciée
+kpss.test(dfm, null = "Level")
+
+# PP série différenciée
+pp.test(dfm)
+
+# ADF série différenciée
+adf_diff <- adfTest_valid(dfm, 24, "c")
+adf_diff
+
 
 #On n'observe pas de tendance nette, donc on choisit une spécification avec une simple constante pour le test d'Augmented Dickey-Fuller.
 adf <- adfTest_valid(dfm,24,"c")
