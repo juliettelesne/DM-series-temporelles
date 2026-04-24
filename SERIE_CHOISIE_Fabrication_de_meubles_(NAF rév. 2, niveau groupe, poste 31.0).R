@@ -37,10 +37,16 @@ str(fm.num) #On vérifie qu'il s'agit bien du format numérique, nécessaire au 
 class(fm.num) #On observe que la série n'est plus au format "zoo".
 
 fm <- zoo(fm.num) #On reconvertit en série temporelle de type "zoo".
+
 class(fm) #On vérifie que l'on fait à nouveau face à une série temporelle de type "zoo".
 print(fm) #On n'observe pas d'anomalie.
 
-
+# Description temporelle de la série
+cat("Nombre d'observations retenues :", length(fm), "\n")
+# On retient 362 observations
+cat("Nombre d'observations total :", length(fm.source_rev) - 3, "\n")
+# sur les 434 au total
+cat("Dernière observation retenue :", format(as.yearmon("jan 1990") + (362-1)/12), "\n") # on a retiré 72 mois (6 ans) à la fin
 
 
 
