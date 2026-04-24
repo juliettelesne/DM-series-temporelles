@@ -406,3 +406,111 @@ plot(ar2$residuals) #les résidus sont trop mims
 
 acf(ar2$residuals, lag = 50)
 
+# Coefficient theta et sigma2 du modèle final
+final_model <- arima(fm, c(0,1,1))
+print(final_model$coef)       # donne theta (ma1)
+print(final_model$sigma2)     # donne sigma^2
+
+
+# Q8 : Construction de l'ellipse
+install.packages("ellipse")
+library(ellipse)
+
+# On reconstruit le modèle et on extrait les paramètres
+final_model <- arima(fm, order = c(0, 1, 1))
+
+theta  <- as.numeric(final_model$coef["ma1"]) # -0.4371
+sigma2 <- final_model$sigma2                   # 11.88
+sigma  <- sqrt(sigma2)
+
+# On calcule les prédictions
+pred     <- predict(final_model, n.ahead = 2)
+X_hat_T1 <- as.numeric(pred$pred[1])
+X_hat_T2 <- as.numeric(pred$pred[2])
+
+cat("X_hat_T+1 =", round(X_hat_T1, 3), "\n")
+# X_hat_T+1 = 105.973 
+cat("X_hat_T+2 =", round(X_hat_T2, 3), "\n")
+#  X_hat_T+2 = 105.973  
+# Les deux prévisions sont identiques, ce qui confirme ce qu'on a démontré à la main
+# pour un MA(1), toute prévision à horizon ≥ 2 est constante.
+
+# on construit la matrice sigma
+
+# D'après nos calculs théoriques :
+# Sigma = sigma^2 * [ 1         (1+theta)          ]
+#                   [ (1+theta)  1+(1+theta)^2      ]
+
+Sigma <- sigma2 * matrix(
+  c(1,           1 + theta,
+    1 + theta,   1 + (1 + theta)^2),
+  nrow = 2, byrow = TRUE
+)
+
+cat("Matrice Sigma :\n")
+print(round(Sigma, 3))
+#        [,1]   [,2]
+# [1,] 11.881  6.687
+# [2,]  6.687 15.645
+
+# la matrice est cohérente avec nos calculs théoriques
+
+# on trace l'ellipse
+# Le centre de l'ellipse correspond au point des prévisions
+centre <- c(X_hat_T1, X_hat_T2)
+
+# Calcul des points de l'ellipse à 95%
+# La fonction ellipse() utilise directement le niveau alpha
+ell <- ellipse(Sigma, centre = centre, level = 0.95, npoints = 1000)
+
+# Tracé
+plot(ell,
+     type = "l",
+     col  = "steelblue",
+     lwd  = 2,
+     xlab = expression(hat(X)[T+1]),
+     ylab = expression(hat(X)[T+2]),
+     main = "Région de confiance à 95% pour (X_{T+1}, X_{T+2})")
+
+# Point central = prévision
+points(x   = centre[1],
+       y   = centre[2],
+       pch = 18,        # losange
+       col = "red",
+       cex = 2)
+
+plot(ell,
+     type = "l",
+     col  = "steelblue",
+     lwd  = 2,
+     xlab = expression(hat(X)[T+1]),
+     ylab = expression(X[T+2]),
+     main = "Région de confiance à 95% pour (X_{T+1}, X_{T+2})",
+     xlim = c(94, 118),
+     ylim = c(97, 117))
+
+points(x = centre[1],
+       y = centre[2],
+       pch = 18,
+       col = "red",
+       cex = 2)
+
+text(x = centre[1] + 0.5,
+     y = centre[2] - 1.2,
+     labels = "Prévision",
+     col = "red",
+     cex = 0.85)
+
+
+# On vérifie que le quantile utilisé est bien chi^2(2) à 95%
+cat("Quantile chi^2(2) à 95% :", round(qchisq(0.95, df = 2), 3), "\n")
+# Doit donner 5.991, ce qui est bien le cas
+
+# Vérifier les demi-axes de l'ellipse
+valeurs_propres <- eigen(Sigma)$values
+cat("Demi-axes de l'ellipse :\n")
+cat("  axe 1 :", round(sqrt(qchisq(0.95, 2) * valeurs_propres[1]), 3), "\n")
+#  axe 1 : 11.139 
+cat("  axe 2 :", round(sqrt(qchisq(0.95, 2) * valeurs_propres[2]), 3), "\n")
+#  axe 2 : 6.39 
+
