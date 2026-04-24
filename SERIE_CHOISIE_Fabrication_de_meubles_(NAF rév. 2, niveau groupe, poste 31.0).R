@@ -63,7 +63,16 @@ fm <- zoo(fm.num, order.by = dates_fm)
 cat("Première observation :", format(index(fm)[1]), "\n")
 cat("Dernière observation :", format(index(fm)[length(fm)]), "\n")
 
-
+# GRAPHIQUE Q3 - Série brute
+par(mfrow = c(1,1))
+plot(fm,
+     type = "l",
+     col  = "steelblue",
+     lwd  = 1.5,
+     xlab = "Date",
+     ylab = "Indice (base 100 en 2021)",
+     main = "IPI Fabrication de meubles - Série brute (jan. 1990 - fév. 2020)")
+abline(h = mean(fm), col = "red", lty = 2, lwd = 1)
 #DEUXIEME ETAPE : RENDRE LA SERIE TEMPORELLE STATIONNAIRE
 
 #Premier tracé de la série
@@ -210,6 +219,22 @@ adf
 #Ce faisant, la série est différenciée.
 dfm <- diff(fm)
 
+# Recréer dfm avec l'index de dates
+dfm <- diff(fm)
+# Vérification
+cat("Index de dfm :", format(index(dfm)[1]), "à", 
+    format(index(dfm)[length(dfm)]), "\n")
+
+# Graphique corrigé
+par(mfrow = c(1,1))
+plot(dfm,
+     type = "l",
+     col  = "steelblue",
+     lwd  = 1.5,
+     xlab = "Date",
+     ylab = "Première différence de l'indice",
+     main = "IPI Fabrication de meubles - Série différenciée")
+abline(h = 0, col = "red", lty = 2, lwd = 1)
 #Tracé de la série différenciée
 par(mfrow=c(1,1))
 plot(dfm) # La série différenciée semble osciller autour de 0 en évoluant dans un couloir, donc semble stationnaire.
@@ -401,10 +426,30 @@ sqrt(mean(s))
 
 
 
+# Conversion en série ts pour que les lags s'affichent en mois
+dfm_ts <- ts(as.numeric(dfm), frequency = 1)
 
+par(mfrow = c(1,2))
+acf(dfm_ts, lag.max = 24,
+    main = "ACF de la série différenciée",
+    xlab = "Lag (mois)",
+    ylab = "Autocorrélation")
+pacf(dfm_ts, lag.max = 24,
+     main = "PACF de la série différenciée",
+     xlab = "Lag (mois)",
+     ylab = "Autocorrélation partielle")
 
+# Résultats à noter pour le rapport
+cat("=== MA(1) ===\n")
+signif(arima001)
+round(Qtests(arima001$residuals, 24, fitdf=1), 3)
 
+cat("=== AR(2) ===\n")
+signif(arima200)
+round(Qtests(arima200$residuals, 24, fitdf=2), 3)
 
+cat("=== AIC et BIC ===\n")
+apply(as.matrix(models), 1, function(m) c("AIC"=AIC(get(m)), "BIC"=BIC(get(m))))
 
 
 
