@@ -370,7 +370,8 @@ sqrt(mean(s))
       
 #Bilan : on modélise la série de départ par un ARIMA(0,1,1)
 arima011 <- arima(fm,c(0,1,1))
-final_model <- arima011 #Renommage pour des raisons de lisibilités
+final_model <- arima011 #Renommage pour des raisons de lisibilité
+      
 
 
 
