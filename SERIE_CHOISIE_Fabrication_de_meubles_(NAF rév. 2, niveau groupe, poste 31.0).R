@@ -498,6 +498,22 @@ print(final_model$coef)       # donne theta (ma1)
 print(final_model$sigma2)     # donne sigma^2
 
 
+# Validation complémentaire des résidus du modèle ARIMA(0,1,1)
+library(tseries)
+jarque.bera.test(final_model$residuals)
+
+par(mfrow = c(1,2))
+qqnorm(final_model$residuals, main = "QQ-plot des résidus")
+qqline(final_model$residuals, col = "red")
+hist(final_model$residuals, 
+     breaks = 30,
+     main = "Distribution des résidus",
+     xlab = "Résidus",
+     col = "steelblue",
+     border = "white")
+
+
+
 # Q8 : Construction de l'ellipse
 install.packages("ellipse")
 library(ellipse)
@@ -599,4 +615,6 @@ cat("  axe 1 :", round(sqrt(qchisq(0.95, 2) * valeurs_propres[1]), 3), "\n")
 #  axe 1 : 11.139 
 cat("  axe 2 :", round(sqrt(qchisq(0.95, 2) * valeurs_propres[2]), 3), "\n")
 #  axe 2 : 6.39 
+
+
 
